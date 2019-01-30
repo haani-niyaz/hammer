@@ -11,7 +11,7 @@ setup(
     author_email='haani.niyaz@gmail.com',
     url='https://github.com/haani-niyaz/hammer',
     license='MIT',
-    description='Utility tool for kubernetes',
+    description='A hacky utility tool to wrangle Kubernetes',
     keywords='automation helper',
     packages=find_packages(exclude=['docs', 'tests']),
     entry_points={
