@@ -22,6 +22,10 @@ class Pod(object):
   def __init__(self, name, namespace='default'):
     """Initialize pod object
 
+    Args:
+      name (str): pod  name
+      namespace (str): pod namespace
+
     Raises:
         KubeError: notify user of errors encoutered when running kubectl commands
     """
