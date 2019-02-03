@@ -75,3 +75,30 @@ class PersistentVolumeClaim(Kubectl):
 
   def _get_persistent_volume(self):
     return self._data['spec']['volumeName']
+
+
+class PersistentVolume(Kubectl):
+
+  def __init__(self, name, flex_volume_id_name=None):
+    """Initialize pvc object
+
+    Args:
+      name (str): pvc name
+
+    Raises:
+        KubeError: notify user of errors encoutered when running kubectl commands
+    """
+
+    self.name = name
+    self._flex_volume_id_name = flex_volume_id_name
+
+    try:
+      self._data = Kubectl._get_data(
+          "kubectl get pv {} -o json".format(self.name))
+    except TasksError as e:
+      raise KubeError(e)
+
+  def get_flex_volume_id(self):
+      # Explicitly looking for a flexVolume
+    if 'flexVolume' in self._data['spec'].keys() and self._flex_volume_id_name in self._data['spec']['flexVolume']['options'].keys():
+      return self._data['spec']['flexVolume']['options'][self._flex_volume_id_name]
