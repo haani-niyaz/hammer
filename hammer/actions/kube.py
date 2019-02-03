@@ -9,6 +9,10 @@ class KubeError(Exception):
 
 class Kubectl(object):
 
+  def __init__(self, name, namespace='default'):
+    self.name = name
+    self.namespace = namespace
+
   @staticmethod
   def _get_data(cmd):
     try:
@@ -17,7 +21,7 @@ class Kubectl(object):
       raise KubeError(e)
 
 
-class Pod(object):
+class Pod(Kubectl):
 
   def __init__(self, name, namespace='default'):
     """Initialize pod object
@@ -30,8 +34,7 @@ class Pod(object):
         KubeError: notify user of errors encoutered when running kubectl commands
     """
 
-    self.name = name
-    self.namespace = namespace
+    super(Pod, self).__init__(name, namespace)
 
     try:
       self._data = Kubectl._get_data(
