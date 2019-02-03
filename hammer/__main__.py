@@ -34,4 +34,6 @@ if cli.sub_cmd == 'bsv':
     print("Failed to initialize Pod object: {}".format(e.message))
     sys.exit(1)
 
-  print(pod.pvcs)
+  # Get PV for PVC home
+  pvc = kube.PersistentVolumeClaim(pod.pvcs.get('home'), cli.namespace)
+  print(pvc.pv)

@@ -49,3 +49,29 @@ class Pod(Kubectl):
       if 'persistentVolumeClaim' in v:
         result[v['name']] = v['persistentVolumeClaim']['claimName']
     return result
+
+
+class PersistentVolumeClaim(Kubectl):
+
+  def __init__(self, name, namespace='default'):
+    """Initialize pvc object
+
+    Args:
+      name (str): pvc name
+      namespace (str): pvc namespace
+
+    Raises:
+        KubeError: notify user of errors encoutered when running kubectl commands
+    """
+
+    super(PersistentVolumeClaim, self).__init__(name, namespace)
+
+    try:
+      self._data = Kubectl._get_data(
+          "kubectl get pvc {0} -n {1} -o json".format(self.name, self.namespace))
+      self.pv = self._get_persistent_volume()
+    except TasksError as e:
+      raise KubeError(e)
+
+  def _get_persistent_volume(self):
+    return self._data['spec']['volumeName']
