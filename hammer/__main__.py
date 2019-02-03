@@ -26,3 +26,12 @@ parser_bsv.add_argument('-v', '--verbose',
 
 
 cli = parser.parse_args()
+
+if cli.sub_cmd == 'bsv':
+  try:
+    pod = kube.Pod(cli.name, cli.namespace)
+  except kube.KubeError as e:
+    print("Failed to initialize Pod object: {}".format(e.message))
+    sys.exit(1)
+
+  print(pod.pvcs)
