@@ -1,6 +1,6 @@
 import sys
 import json
-from ..utils.tasks import TasksError, run_cmd, json_to_dict
+from ..utils.tasks import TasksError, run_cmd, json_to_dict, pprint
 
 
 class KubeError(Exception):
@@ -79,7 +79,7 @@ class PersistentVolumeClaim(Kubectl):
 
 class PersistentVolume(Kubectl):
 
-  def __init__(self, name, flex_volume_id_name=None):
+  def __init__(self, name):
     """Initialize pvc object
 
     Args:
@@ -90,7 +90,6 @@ class PersistentVolume(Kubectl):
     """
 
     self.name = name
-    self._flex_volume_id_name = flex_volume_id_name
 
     try:
       self._data = Kubectl._get_data(
@@ -98,7 +97,11 @@ class PersistentVolume(Kubectl):
     except TasksError as e:
       raise KubeError(e)
 
-  def get_flex_volume_id(self):
-      # Explicitly looking for a flexVolume
-    if 'flexVolume' in self._data['spec'].keys() and self._flex_volume_id_name in self._data['spec']['flexVolume']['options'].keys():
-      return self._data['spec']['flexVolume']['options'][self._flex_volume_id_name]
+  def get_flex_volume_options(self):
+    if 'flexVolume' in self._data['spec'].keys():
+      return self._data['spec']['flexVolume']['options']
+
+  def get_flex_volume_id(self, flex_volume_id_name):
+    flex_volume_options = self.get_flex_volume_options()
+    if flex_volume_id_name in flex_volume_options.keys():
+      return flex_volume_options[flex_volume_id_name]

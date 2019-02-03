@@ -21,7 +21,7 @@ parser_bsv = subparsers.add_parser(
 parser_bsv.add_argument('name', help='name of pod')
 parser_bsv.add_argument('-n', '--namespace',
                         help='Pod namespace')
-parser_bsv.add_argument('-v', '--verbose',
+parser_bsv.add_argument('-v', '--verbose', action='store_true',
                         help='show detailed output')
 
 
@@ -36,6 +36,7 @@ if cli.sub_cmd == 'bsv':
 
   # Get PV for PVC home
   pvc = kube.PersistentVolumeClaim(pod.pvc_names.get('home'), cli.namespace)
-  print(pvc.pv_name)
 
   pv = kube.PersistentVolume(pvc.pv_name)
+
+  print(pv.get_flex_volume_id('BsvId'))
