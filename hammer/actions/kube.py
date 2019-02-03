@@ -10,7 +10,7 @@ class KubeError(Exception):
 class Kubectl(object):
 
   @staticmethod
-  def _get_pod_data(cmd):
+  def _get_data(cmd):
     try:
       return json_to_dict(run_cmd(cmd))
     except TasksError, e:
@@ -34,7 +34,7 @@ class Pod(object):
     self.namespace = namespace
 
     try:
-      self._data = Kubectl._get_pod_data(
+      self._data = Kubectl._get_data(
           "kubectl get po {0} -n {1} -o json".format(self.name, self.namespace))
       self.pvcs = self._get_persistent_volume_claims()
     except TasksError as e:
