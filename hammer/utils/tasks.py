@@ -31,3 +31,31 @@ def json_to_dict(data):
   # Malformed json
   except TypeError as e:
     raise TasksError("Failed to load json data: {}".format(e))
+
+
+def run_cmd(cmd):
+  """Run command and print output 
+
+  Args:
+      cmd (str): unix command string
+
+  Raises:
+      TasksError: validates if the 'command' to execute exists in the user's path
+  """
+
+  cmd = cmd.split()
+  try:
+    check_output(['which', cmd[0]])
+  except CalledProcessError, e:
+    raise TasksError("Is '{0}' executable in your path?".format(cmd[0]))
+
+  process = Popen(cmd, stdout=PIPE, stderr=PIPE)
+  # Wait for child process to terminate before checking exit code
+  process.wait()
+
+  # Return stdout if no failures
+  if process.returncode == 0:
+    return process.stdout.read()
+  else:
+    message = ''.join(process.stderr)
+    raise TasksError(message)
