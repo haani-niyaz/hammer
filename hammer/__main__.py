@@ -35,5 +35,7 @@ if cli.sub_cmd == 'bsv':
     sys.exit(1)
 
   # Get PV for PVC home
-  pvc = kube.PersistentVolumeClaim(pod.pvcs.get('home'), cli.namespace)
-  print(pvc.pv)
+  pvc = kube.PersistentVolumeClaim(pod.pvc_names.get('home'), cli.namespace)
+  print(pvc.pv_name)
+
+  pv = kube.PersistentVolume(pvc.pv_name)

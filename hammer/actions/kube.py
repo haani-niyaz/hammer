@@ -39,7 +39,7 @@ class Pod(Kubectl):
     try:
       self._data = Kubectl._get_data(
           "kubectl get po {0} -n {1} -o json".format(self.name, self.namespace))
-      self.pvcs = self._get_persistent_volume_claims()
+      self.pvc_names = self._get_persistent_volume_claims()
     except TasksError as e:
       raise KubeError(e)
 
@@ -69,7 +69,7 @@ class PersistentVolumeClaim(Kubectl):
     try:
       self._data = Kubectl._get_data(
           "kubectl get pvc {0} -n {1} -o json".format(self.name, self.namespace))
-      self.pv = self._get_persistent_volume()
+      self.pv_name = self._get_persistent_volume()
     except TasksError as e:
       raise KubeError(e)
 
