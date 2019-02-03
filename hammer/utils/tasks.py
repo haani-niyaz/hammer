@@ -13,6 +13,10 @@ class TasksError(Exception):
   pass
 
 
+def pprint(parsed):
+  return json.dumps(parsed, indent=4, sort_keys=True)
+
+
 def json_to_dict(data):
   """Covert json data to python dict
 
@@ -34,7 +38,7 @@ def json_to_dict(data):
 
 
 def run_cmd(cmd):
-  """Run command and print output 
+  """Run command and print output
 
   Args:
       cmd (str): unix command string
