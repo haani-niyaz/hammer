@@ -19,7 +19,7 @@ parser_bsv = subparsers.add_parser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     help='find block storage volume id for a given pod')
 parser_bsv.add_argument('pod', help='name of pod')
-parser_bsv.add_argument('-n', '--namespace',
+parser_bsv.add_argument('-n', '--namespace', default='default',
                         help='Pod namespace')
 parser_bsv.add_argument('-a', '--pvc', default='home',
                         help='persistent volume claim name')

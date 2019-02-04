@@ -9,7 +9,7 @@ class KubeError(Exception):
 
 class Kubectl(object):
 
-  def __init__(self, name, namespace='default'):
+  def __init__(self, name, namespace):
     self.name = name
     self.namespace = namespace
 
@@ -23,7 +23,7 @@ class Kubectl(object):
 
 class Pod(Kubectl):
 
-  def __init__(self, name, namespace='default'):
+  def __init__(self, name, namespace):
     """Initialize pod object
 
     Args:
@@ -37,6 +37,7 @@ class Pod(Kubectl):
     super(Pod, self).__init__(name, namespace)
 
     try:
+      print(self.namespace)
       self._data = Kubectl._get_data(
           "kubectl get po {0} -n {1} -o json".format(self.name, self.namespace))
       self.pvc_names = self._get_persistent_volume_claims()
@@ -53,7 +54,7 @@ class Pod(Kubectl):
 
 class PersistentVolumeClaim(Kubectl):
 
-  def __init__(self, name, namespace='default'):
+  def __init__(self, name, namespace):
     """Initialize pvc object
 
     Args:
@@ -101,7 +102,12 @@ class PersistentVolume(Kubectl):
     if 'flexVolume' in self._data['spec'].keys():
       return self._data['spec']['flexVolume']['options']
 
+    return None
+
   def get_flex_volume_id(self, flex_volume_id_name):
-    flex_volume_options = self.get_flex_volume_options()
-    if flex_volume_id_name in flex_volume_options.keys():
-      return flex_volume_options[flex_volume_id_name]
+    result = self.get_flex_volume_options()
+    if result:
+      if flex_volume_id_name in result.keys():
+        return result[flex_volume_id_name]
+    else:
+      return result
