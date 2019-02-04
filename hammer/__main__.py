@@ -15,21 +15,21 @@ subparsers = parser.add_subparsers(
 
 # bsv operations
 parser_bsv = subparsers.add_parser(
-    'bsv',
+    'get-bsv',
     formatter_class=argparse.RawDescriptionHelpFormatter,
-    help='find block storage volume details for a given pod')
-parser_bsv.add_argument('name', help='name of pod')
+    help='find block storage volume id for a given pod')
+parser_bsv.add_argument('pod', help='name of pod')
 parser_bsv.add_argument('-n', '--namespace',
                         help='Pod namespace')
-parser_bsv.add_argument('-v', '--verbose', action='store_true',
-                        help='show detailed output')
+parser_bsv.add_argument('-a', '--pvc', default='home',
+                        help='persistent volume claim name')
 
 
 cli = parser.parse_args()
 
-if cli.sub_cmd == 'bsv':
+if cli.sub_cmd == 'get-bsv':
   try:
-    pod = kube.Pod(cli.name, cli.namespace)
+    pod = kube.Pod(cli.pod, cli.namespace)
   except kube.KubeError as e:
     print("Failed to initialize Pod object: {}".format(e.message))
     sys.exit(1)
