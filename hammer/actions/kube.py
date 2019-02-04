@@ -37,7 +37,6 @@ class Pod(Kubectl):
     super(Pod, self).__init__(name, namespace)
 
     try:
-      print(self.namespace)
       self._data = Kubectl._get_data(
           "kubectl get po {0} -n {1} -o json".format(self.name, self.namespace))
       self.pvc_names = self._get_persistent_volume_claims()
