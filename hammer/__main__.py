@@ -27,19 +27,25 @@ parser_bsv.add_argument('-a', '--pvc', default='home',
 
 cli = parser.parse_args()
 
+
 if cli.sub_cmd == 'get-bsv':
   try:
     pod = kube.Pod(cli.pod, cli.namespace)
-  except kube.KubeError as e:
-    print("Failed to initialize Pod object: {}".format(e.message))
+  except kube.KubectlError as e:
+    print(e.message)
     sys.exit(1)
 
+  # if cli.verbose:
+  #   print(pod.pvc_names)
+
   # Get PV for PVC home
-  pvc_name = pod.pvc_names.get('home')
+  pvc_name = pod.pvc_names.get(cli.pvc)
   if pvc_name:
-    pvc = kube.PersistentVolumeClaim(pod.pvc_names.get('home'), cli.namespace)
+    pvc = kube.PersistentVolumeClaim(pvc_name, cli.namespace)
     pv = kube.PersistentVolume(pvc.pv_name)
-    print(pv.get_flex_volume_id('BsvId'))
+    flex_volume_id = pv.get_flex_volume_id('BsvId')
+    if flex_volume_id:
+      print(flex_volume_id)
   else:
     print("No 'home' persistent volume claim")
     sys.exit(1)

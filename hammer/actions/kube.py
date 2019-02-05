@@ -3,7 +3,7 @@ import json
 from ..utils.tasks import TasksError, run_cmd, json_to_dict, pprint
 
 
-class KubeError(Exception):
+class KubectlError(Exception):
   """An exception that occurs when action is performed on a role"""
 
 
@@ -18,7 +18,7 @@ class Kubectl(object):
     try:
       return json_to_dict(run_cmd(cmd))
     except TasksError, e:
-      raise KubeError(e)
+      raise KubectlError(e)
 
 
 class Pod(Kubectl):
@@ -31,7 +31,7 @@ class Pod(Kubectl):
       namespace (str): pod namespace
 
     Raises:
-        KubeError: notify user of errors encoutered when running kubectl commands
+        KubectlError: notify user of errors encoutered when running kubectl commands
     """
 
     super(Pod, self).__init__(name, namespace)
@@ -41,7 +41,7 @@ class Pod(Kubectl):
           "kubectl get po {0} -n {1} -o json".format(self.name, self.namespace))
       self.pvc_names = self._get_persistent_volume_claims()
     except TasksError as e:
-      raise KubeError(e)
+      raise KubectlError(e)
 
   def _get_persistent_volume_claims(self):
     result = {}
@@ -61,7 +61,7 @@ class PersistentVolumeClaim(Kubectl):
       namespace (str): pvc namespace
 
     Raises:
-        KubeError: notify user of errors encoutered when running kubectl commands
+        KubectlError: notify user of errors encoutered when running kubectl commands
     """
 
     super(PersistentVolumeClaim, self).__init__(name, namespace)
@@ -71,7 +71,7 @@ class PersistentVolumeClaim(Kubectl):
           "kubectl get pvc {0} -n {1} -o json".format(self.name, self.namespace))
       self.pv_name = self._get_persistent_volume()
     except TasksError as e:
-      raise KubeError(e)
+      raise KubectlError(e)
 
   def _get_persistent_volume(self):
     return self._data['spec']['volumeName']
@@ -86,7 +86,7 @@ class PersistentVolume(Kubectl):
       name (str): pvc name
 
     Raises:
-        KubeError: notify user of errors encoutered when running kubectl commands
+        KubectlError: notify user of errors encoutered when running kubectl commands
     """
 
     self.name = name
@@ -95,7 +95,7 @@ class PersistentVolume(Kubectl):
       self._data = Kubectl._get_data(
           "kubectl get pv {} -o json".format(self.name))
     except TasksError as e:
-      raise KubeError(e)
+      raise KubectlError(e)
 
   def get_flex_volume_options(self):
     if 'flexVolume' in self._data['spec'].keys():
