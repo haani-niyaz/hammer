@@ -20,11 +20,11 @@ parser_bsv = subparsers.add_parser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     help='find block storage volume id for a given pod',
     description=textwrap.dedent('''Description:
-  Retrieve the PersistentVolume BSV id from a Pod name 
-  in a given namespace with a target PersistentVolumeClaim 
+  Retrieve the PersistentVolume BSV id from a Pod name
+  in a given namespace with a target PersistentVolumeClaim
   name.
-  
-  By default the Kubernetes 'default' namespace is used 
+
+  By default the Kubernetes 'default' namespace is used
   with PersistentVolumeClaim name 'home'.
 
       ''')
@@ -39,7 +39,7 @@ parser_bsv.add_argument('-c', '--pvc', default='home',
 cli = parser.parse_args()
 
 
-if cli.sub_cmd == 'get-bsv':
+def get_bsv():
   try:
     pod = kube.Pod(cli.pod, cli.namespace)
   except kube.KubectlError as e:
@@ -55,10 +55,14 @@ if cli.sub_cmd == 'get-bsv':
     pv = kube.PersistentVolume(pvc.pv_name)
     flex_volume_id = pv.get_flex_volume_id('BsvId')
     if flex_volume_id:
-      print(flex_volume_id)
+      return flex_volume_id
     else:
       print('No bsv found')
       sys.exit(1)
   else:
-    print("No {} persistent volume claim".format(cli.pvc))
+    print("No '{}' PersistentColumeClaim was found".format(cli.pvc))
     sys.exit(1)
+
+
+if cli.sub_cmd == 'get-bsv':
+  print(get_bsv())
