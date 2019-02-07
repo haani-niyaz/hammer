@@ -22,8 +22,8 @@ parser_bsv = subparsers.add_parser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     help='find block storage volume id for a given pod',
     description=textwrap.dedent('''Description:
-  Retrieve the PersistentVolume BSV id from a Pod name
-  in a given namespace with a target PersistentVolumeClaim
+  Retrieve the BSV id in a PersistentVolume from a Pod name
+  (in a given namespace) and a target PersistentVolumeClaim
   name.
 
   By default the Kubernetes 'default' namespace is used
