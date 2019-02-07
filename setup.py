@@ -16,7 +16,7 @@ setup(
     packages=find_packages(exclude=['docs', 'tests']),
     entry_points={
         'console_scripts': [
-            'ducttape=ducttape:main',
+            'ducttape=ducttape.__main__:main',
         ],
     },
 )
