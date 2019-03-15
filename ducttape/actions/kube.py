@@ -83,7 +83,7 @@ class PersistentVolume(Kubectl):
     """Initialize pvc object
 
     Args:
-      name (str): pvc name
+      name (str): pv name
 
     Raises:
         KubectlError: notify user of errors encoutered when running kubectl commands
