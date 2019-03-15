@@ -103,7 +103,7 @@ class PersistentVolume(Kubectl):
 
     return None
 
-  def get_flex_volume_id(self, flex_volume_id_name):
+  def get_flex_volume_id(self, flex_volume_id_name='BsvId'):
     result = self.get_flex_volume_options()
     if result:
       if flex_volume_id_name in result.keys():
