@@ -43,7 +43,7 @@ def get_bsv_id(pvc, namespace):
     pv = kube.PersistentVolume(pvc.pv_name)
     flex_volume_id = pv.get_flex_volume_id('BsvId')
     if flex_volume_id:
-      print(flex_volume_id)
+      return flex_volume_id
     else:
       print('No bsv found')
       sys.exit(1)
@@ -56,3 +56,4 @@ def main():
 
   if cli.sub_cmd == 'get-bsv':
     bsv_id = get_bsv_id(cli.pvc, cli.namespace)
+    print(bsv_id)
