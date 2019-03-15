@@ -61,5 +61,5 @@ def run_cmd(cmd):
   if process.returncode == 0:
     return process.stdout.read()
   else:
-    message = ''.join(process.stderr)
+    message = ''.join(process.stderr).rstrip('\n\r')
     raise TasksError(message)
