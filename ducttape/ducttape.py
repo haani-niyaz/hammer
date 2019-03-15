@@ -43,26 +43,16 @@ cli = parser.parse_args()
 
 def get_bsv_id():
   try:
-    pod = kube.Pod(cli.pod, cli.namespace)
-  except kube.KubectlError as e:
-    print(e.message)
-    sys.exit(1)
-
-  # Get PV name for PVC name
-  pvc_name = pod.pvc_names.get(cli.pvc)
-
-  # Get block storage volume ID
-  if pvc_name:
-    pvc = kube.PersistentVolumeClaim(pvc_name, cli.namespace)
+    pvc = kube.PersistentVolumeClaim(cli.pvc, cli.namespace)
     pv = kube.PersistentVolume(pvc.pv_name)
     flex_volume_id = pv.get_flex_volume_id('BsvId')
     if flex_volume_id:
-      return flex_volume_id
+      print(flex_volume_id)
     else:
       print('No bsv found')
       sys.exit(1)
-  else:
-    print("No '{}' PersistentColumeClaim was found".format(cli.pvc))
+  except kube.KubectlError as e:
+    print(e)
     sys.exit(1)
 
 
@@ -70,12 +60,3 @@ def main():
 
   if cli.sub_cmd == 'get-bsv':
     bsv_id = get_bsv_id()
-
-    # get host to validate tenancy details
-    nodes = tasks.run_cmd("kubectl get nodes -o name")
-    node = nodes.split('\n')[0]
-
-    sub_tenancy = (node.split('/')[1])[1:5]
-
-    print(tasks.run_cmd(
-        "ecm -p {} bsv get {}".format(constants.ECM_PROFILES[sub_tenancy], bsv_id)))
